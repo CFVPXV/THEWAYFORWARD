@@ -12,7 +12,7 @@ public class Client implements Runnable{
     String name;
     Socket con;
     ObjectInputStream inFromServer;
-    ObjectOutputStream outToServer;
+    DataOutputStream outToServer;
     Scanner scnr;
     ArrayList<String> myDeck;
     int powerpoints;
@@ -25,7 +25,7 @@ public class Client implements Runnable{
         try {
             con = new Socket(ip, port);
             inFromServer = new ObjectInputStream(con.getInputStream());
-            outToServer = new ObjectOutputStream(con.getOutputStream());
+            outToServer = new DataOutputStream(con.getOutputStream());
         } catch (IOException e) {
             throw new RuntimeException(e);
         }
@@ -34,38 +34,37 @@ public class Client implements Runnable{
     @Override
     public void run() {
 
-        while(true) {
             try {
                 System.out.println("Players connected!");
                 System.out.println("Welcome " + name + "!");
                 System.out.println("You have a total of " + powerpoints + " power points!");
-                System.out.println("Here are the cards you can play:");
                 try {
                     myDeck = (ArrayList<String>) inFromServer.readObject();
                 } catch (ClassNotFoundException e) {
                     throw new RuntimeException(e);
                 }
-
-                for(int i = 0; i < myDeck.size(); i++) {
-                    System.out.println((i + 1) + ") " + myDeck.get(i));
-                }
+                while (true) {
+                    for (int i = 0; i < myDeck.size(); i++) {
+                        System.out.println((i + 1) + ") " + myDeck.get(i));
+                    }
                     System.out.println("Which will you play?");
                     int select = scnr.nextInt();
                     String playedCard = myDeck.get(select - 1);
-                    String powerLevelString = playedCard.replaceAll("\\D", "");
+                    String powerLevelString = playedCard.replaceAll("[^0-9]", "");
+                    String suitString = playedCard.replaceAll("[0-9]", "");
                     int parsed = Integer.parseInt(powerLevelString);
                     System.out.println(parsed);
-                    if(powerpoints - parsed <= 0){
-                        System.out.println("Sorry, you cant play any further");
-                    }
-                    powerpoints -= parsed;
-
-                int msg = scnr.nextInt();
-                //outToServer.writeUTF(msg);
-            } catch (IOException e) {
+                    outToServer.writeInt(parsed);
+                    outToServer.writeUTF(suitString);
+                    System.out.println("Sent " + playedCard + " to server!");
+                    System.out.println("Would you like to play another card?");
+                    int playgain = scnr.nextInt();
+                    outToServer.writeInt(playgain);
+                }
+            }catch(IOException e){
                 throw new RuntimeException(e);
             }
         }
 
     }
-}
+

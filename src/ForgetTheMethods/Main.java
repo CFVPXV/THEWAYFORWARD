@@ -16,15 +16,12 @@ public class Main {
             driver = new Thread(new Listener(9000, 100));
         }
 
-
         else if (ans.compareTo("C") == 0) {
             System.out.println("Enter Name: ");
             String n = s.next();
             System.out.println("Waiting on other player...");
             driver = new Thread(new Client("127.0.0.1", 9000, n));
         }
-
-
 
         else {
             System.out.println("Incorrect input!");

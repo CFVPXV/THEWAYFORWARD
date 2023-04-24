@@ -28,19 +28,15 @@ public class Listener implements Runnable{
 
     @Override
     public void run() {
-
         try {
-
             player1 = serve.accept();
             System.out.println("Player 1 connected!");
 
             player2 = serve.accept();
             System.out.println("Player 2 connected!");
-
         } catch (IOException e) {
             throw new RuntimeException(e);
         }
-
         connections.execute(new HandleSession(player1, player2, gameDeck));
 
     }

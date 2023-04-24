@@ -48,8 +48,15 @@ public class HandleSession implements Runnable{
             outP2.writeObject(p2Deck);
 
             while (true) {
-                System.out.println("Player 1 says: " + inP1.readUTF());
-                System.out.println("Player 2 says: " + inP2.readUTF());
+                int lok = inP1.readInt();
+                String p1Suit = inP1.readUTF();
+                int p1playgain = inP1.readInt();
+                int steppenzu = inP2.readInt();
+                String p2suit = inP2.readUTF();
+                int p2playgain = inP2.readInt();
+                System.out.println("Player 1 says: " + lok + " " + p1Suit + " " + p1playgain);
+                System.out.println("Player 2 says: " + steppenzu + " " + p2suit + " " + p2playgain);
+                System.out.println("Leaving this here...");
             }
         }catch(IOException e){
                 throw new RuntimeException(e);
