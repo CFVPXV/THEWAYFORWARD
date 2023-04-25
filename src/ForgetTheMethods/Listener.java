@@ -22,13 +22,14 @@ public class Listener implements Runnable{
         try {
             serve = new ServerSocket(port);
         } catch (IOException e) {
-            throw new RuntimeException(e);
+            System.out.println("Error setting up server" + e.getMessage());
         }
     }
 
     @Override
     public void run() {
         try {
+            System.out.println("Awaiting for player connection...");
             player1 = serve.accept();
             System.out.println("Player 1 connected!");
 

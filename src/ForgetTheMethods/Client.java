@@ -61,6 +61,10 @@ public class Client implements Runnable{
                         outToServer.writeInt(select);
                         break;
                     }
+                    else if((select - 1) >= myDeck.size() || (select - 1) <= -1){
+                        System.out.println("Not a proper selection!");
+                        continue;
+                    }
                     String playedCard = myDeck.get(select - 1);
                     String powerLevelString = playedCard.replaceAll("[^0-9]", "");
                     String suitString = playedCard.replaceAll("[0-9]", "");
@@ -70,13 +74,21 @@ public class Client implements Runnable{
                         continue;
                     }
                     powerpoints -= parsed;
-                    System.out.println(parsed);
                     outToServer.writeInt(parsed);
                     outToServer.writeUTF(suitString);
                     myDeck.remove(select - 1);
-                    System.out.println("Sent " + playedCard + " to server!");
+                    System.out.println("Sending " + playedCard + " to server!");
                     System.out.println("Would you like to play another card?");
-                    int playgain = scnr.nextInt();
+                    String rep = scnr.next();
+                    int playgain;
+                    if(rep.compareTo("Y") == 0){
+                        playgain = 1;
+                    } else if (rep.compareTo("N") == 0) {
+                        playgain = 0;
+                    } else{
+                        System.out.println("Invalid entry!");
+                        playgain = 0;
+                    }
                     outToServer.writeInt(playgain);
                     if(playgain == 0) {
                         break;

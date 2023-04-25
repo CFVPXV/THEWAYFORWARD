@@ -70,6 +70,8 @@ public class HandleSession implements Runnable{
             p1DataQueue = new LinkedList<>();
             p2DataQueue = new LinkedList<>();
 
+            System.out.println("Game session begun! Allocating cards...");
+
             for(int i = 0; i < 10; i++){
                 if(i % 2 == 0){
                     p1Deck.add(gameDeck.pop());
@@ -77,7 +79,7 @@ public class HandleSession implements Runnable{
                     p2Deck.add(gameDeck.pop());
                 }
             }
-
+            System.out.println("Cards allocated!");
             outP1.writeObject(p1Deck);
             outP2.writeObject(p2Deck);
 
@@ -98,7 +100,7 @@ public class HandleSession implements Runnable{
                         String p1Suit = inP1.readUTF();
                         p1SuitPlayed.add(p1Suit);
                         int p1playgain = inP1.readInt();
-                        System.out.println("Player 1 says: " + lok + " " + p1Suit + " " + p1playgain);
+                        System.out.println("Player 1 Played: " + p1Suit + " " + lok + " " +  "Play again: " + p1playgain);
                         if (p1playgain == 0) {
                             System.out.println("P1 done");
                             p1Done = true;
@@ -118,7 +120,7 @@ public class HandleSession implements Runnable{
                         String p2suit = inP2.readUTF();
                         p2SuitPlayed.add(p2suit);
                         int p2playgain = inP2.readInt();
-                        System.out.println("Player 2 says: " + steppenzu + " " + p2suit + " " + p2playgain);
+                        System.out.println("Player 2 played: " + p2suit + " " + steppenzu + " " + p2playgain +  "Play again: " + p2playgain);
                         if (p2playgain == 0) {
                             System.out.println("P2 done");
                             p2Done = true;
@@ -129,8 +131,8 @@ public class HandleSession implements Runnable{
                     }
 
             }
-            System.out.println("Left the infinite loop!");
-
+            System.out.println("Calculating final score!");
+            System.out.println("Player 1 Calculation:");
             for(int i = 0; i < p1PowerPlayed.size(); i++){
                 p1Score += p1PowerPlayed.get(i);
                 System.out.println(p1Score);
@@ -150,7 +152,7 @@ public class HandleSession implements Runnable{
                         if(p2SuitPlayed.get(j).contains("Scissors")){
                             p1Score++;
                             System.out.println(p1Score);
-                            p1resultsStack.add("You played rock, player 2 played scissors: " + p1Score);
+                            p1resultsStack.add("You played rock, your opponent played scissors, +1 to total: " + p1Score);
                         }
                     }
                 }
@@ -159,7 +161,7 @@ public class HandleSession implements Runnable{
                         if(p2SuitPlayed.get(j).contains("Rock")){
                             p1Score++;
                             System.out.println(p1Score);
-                            p1resultsStack.add("You played Paper, player 2 had Rock: " + p1Score);
+                            p1resultsStack.add("You played Paper, your opponent played Rock, +1 to total: " + p1Score);
                         }
                     }
                 }
@@ -168,7 +170,7 @@ public class HandleSession implements Runnable{
                         if(p2SuitPlayed.get(j).contains("Paper")){
                             p1Score++;
                             System.out.println(p1Score);
-                            p1resultsStack.add("You played Scissors, player 2 had Paper: " + p1Score);
+                            p1resultsStack.add("You played Scissors, your opponent played Paper, +1 to total:" + p1Score);
                         }
                     }
                 }
@@ -176,13 +178,13 @@ public class HandleSession implements Runnable{
             }
 
 
-
+            System.out.println("Player 2 Calculation:");
             for(int i = 0; i < p2SuitPlayed.size(); i++){
                 if(p2SuitPlayed.get(i).contains("Rock")){
                     for(int j = 0; j < p1SuitPlayed.size(); j++){
                         if(p1SuitPlayed.get(j).contains("Scissors")){
                             p2Score++;
-                            p2resultStack.add("Player 2 played Rock, player 1 had Scissors: " + p2Score);
+                            p2resultStack.add("You played Rock, your opponent played Scissors, +1 to total:" + p2Score);
                         }
                     }
                 }
@@ -190,7 +192,7 @@ public class HandleSession implements Runnable{
                     for(int j = 0; j < p1SuitPlayed.size(); j++){
                         if(p1SuitPlayed.get(j).contains("Rock")){
                             p2Score++;
-                            p2resultStack.add("Player 2 played Paper, player 1 had Rock: " + p2Score);
+                            p2resultStack.add("You played Paper, your opponent played Rock, +1 to total: " + p2Score);
                         }
                     }
                 }
@@ -198,7 +200,7 @@ public class HandleSession implements Runnable{
                     for(int j = 0; j < p1SuitPlayed.size(); j++){
                         if(p1SuitPlayed.get(j).contains("Paper")){
                             p2Score++;
-                            p2resultStack.add("Player 2 played Scissors, player 1 had Paper: " + p2Score);
+                            p2resultStack.add("You played Scissors, your opponent played Paper, +1 to total: " + p2Score);
                         }
                     }
                 }
@@ -221,7 +223,8 @@ public class HandleSession implements Runnable{
                 outP2.writeObject(p2resultStack);
             }
 
-
+            player1.close();
+            player2.close();
 
         }catch(IOException e){
                 throw new RuntimeException(e);
