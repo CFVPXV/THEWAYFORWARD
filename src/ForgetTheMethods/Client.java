@@ -55,10 +55,10 @@ public class Client implements Runnable{
                     for (int i = 0; i < myDeck.size(); i++) {
                         System.out.println((i + 1) + ") " + myDeck.get(i));
                     }
-                    System.out.println("Which will you play? Or just quit now...");
+                    System.out.println("Which will you play? Or just quit now...(0)");
                     int select = scnr.nextInt();
                     if(select == 0){
-                        outToServer.writeInt(select);
+                        outToServer.writeInt(0);
                         break;
                     }
                     else if((select - 1) >= myDeck.size() || (select - 1) <= -1){

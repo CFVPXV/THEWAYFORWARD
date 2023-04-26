@@ -110,6 +110,7 @@ public class HandleSession implements Runnable{
                     if(p1Done && p2Done){
                         break;
                     }
+
                     if(inP2.available() != 0) {
                         int steppenzu = inP2.readInt();
                         if(steppenzu == 0){
@@ -141,18 +142,22 @@ public class HandleSession implements Runnable{
 
             for(int i = 0; i < p2PowerPlayed.size(); i++){
                 p2Score += p2PowerPlayed.get(i);
-
                 System.out.println(p2Score);
             }
             p2resultStack.add("Your initial score was: " + p2Score);
+
+            int rockCount = 0;
+            int paperCount = 0;
+            int scissorsCount = 0;
 
             for(int i = 0; i < p1SuitPlayed.size(); i++){
                 if(p1SuitPlayed.get(i).contains("Rock")){
                     for(int j = 0; j < p2SuitPlayed.size(); j++){
                         if(p2SuitPlayed.get(j).contains("Scissors")){
                             p1Score++;
+                            scissorsCount++;
                             System.out.println(p1Score);
-                            p1resultsStack.add("You played rock, your opponent played scissors, +1 to total: " + p1Score);
+
                         }
                     }
                 }
@@ -160,8 +165,9 @@ public class HandleSession implements Runnable{
                     for(int j = 0; j < p2SuitPlayed.size(); j++){
                         if(p2SuitPlayed.get(j).contains("Rock")){
                             p1Score++;
+                            rockCount++;
                             System.out.println(p1Score);
-                            p1resultsStack.add("You played Paper, your opponent played Rock, +1 to total: " + p1Score);
+
                         }
                     }
                 }
@@ -169,42 +175,66 @@ public class HandleSession implements Runnable{
                     for(int j = 0; j < p2SuitPlayed.size(); j++){
                         if(p2SuitPlayed.get(j).contains("Paper")){
                             p1Score++;
+                            paperCount++;
                             System.out.println(p1Score);
-                            p1resultsStack.add("You played Scissors, your opponent played Paper, +1 to total:" + p1Score);
+
                         }
                     }
                 }
 
             }
+            if(scissorsCount > 0) {
+                p1resultsStack.add("You played Rock, your opponent played scissors adding +" + scissorsCount + " to total score: "  + p1Score);
+            } else if (rockCount > 0) {
+                p1resultsStack.add("You played Paper, your opponent played Rock adding +" + rockCount + " to total score: " + p1Score);
+            } else if (paperCount > 0) {
+                p1resultsStack.add("You played Scissors, your opponent played Paper adding +" + paperCount + " to total score: " + p1Score);
+            }
 
+            rockCount = 0;
+            paperCount = 0;
+            scissorsCount = 0;
 
             System.out.println("Player 2 Calculation:");
+            System.out.println(p2Score);
             for(int i = 0; i < p2SuitPlayed.size(); i++){
                 if(p2SuitPlayed.get(i).contains("Rock")){
                     for(int j = 0; j < p1SuitPlayed.size(); j++){
                         if(p1SuitPlayed.get(j).contains("Scissors")){
+                            scissorsCount++;
                             p2Score++;
-                            p2resultStack.add("You played Rock, your opponent played Scissors, +1 to total:" + p2Score);
+                            System.out.println(p2Score);
                         }
                     }
                 }
                 if(p2SuitPlayed.get(i).contains("Paper")){
                     for(int j = 0; j < p1SuitPlayed.size(); j++){
                         if(p1SuitPlayed.get(j).contains("Rock")){
+                            rockCount++;
                             p2Score++;
-                            p2resultStack.add("You played Paper, your opponent played Rock, +1 to total: " + p2Score);
+                            System.out.println(p2Score);
                         }
                     }
                 }
                 if(p2SuitPlayed.get(i).contains("Scissors")){
                     for(int j = 0; j < p1SuitPlayed.size(); j++){
                         if(p1SuitPlayed.get(j).contains("Paper")){
+                            paperCount++;
                             p2Score++;
-                            p2resultStack.add("You played Scissors, your opponent played Paper, +1 to total: " + p2Score);
+                            System.out.println(p2Score);
                         }
                     }
                 }
             }
+
+            if(scissorsCount > 0) {
+                p2resultStack.add("You played rock, your opponent played scissors adding +" + scissorsCount + " to total score: "  + p2Score);
+            } else if (rockCount > 0) {
+                p2resultStack.add("You played Paper, your opponent played Rock adding +" + rockCount + " to total score: " + p2Score);
+            } else if (paperCount > 0) {
+                p2resultStack.add("You played Scissors, your opponent played Paper adding +" + paperCount + " to total score: " + p2Score);
+            }
+
 
             if(p1Score > p2Score){
                 p1resultsStack.add("You have won!");
